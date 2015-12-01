@@ -1,0 +1,109 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (c) 2015 Nagarjuna Kumarappan
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# Author: Nagarjuna Kumarappan <nagarjuna.412@gmail.com>
+
+
+import sys
+from numpy import histogram,percentile
+import argparse
+from math import floor
+
+# Constants
+CHARS={'full_top':'┃', 'half_top':'╻', 'fill':'┃'}
+
+def draw_hist(normed_hist_list,shape,args):
+    """ takes a list of histogram bin counts and shape(min,max) of input """
+    
+    # TODO make the offset configurable
+    y_offset = '       '
+    y_label  = ' prop. '
+
+    print ""
+    # Build plot from top level
+    for depth in range(args.height-1,-1,-1):
+
+        # Draw Y axis
+        if depth == args.height/2:
+            sys.stdout.write(y_label+'│')
+        else:
+            sys.stdout.write(y_offset+'│')
+
+        # Draw bars
+        for item in normed_hist_list:
+            floored_item = floor(item)
+            if floored_item >= depth:
+                if floored_item == depth and item % 1 < 0.75 and item%1 >0.25:
+                    sys.stdout.write( CHARS['half_top'] )
+                elif floored_item == depth and item % 1 > 0.75 :
+                    sys.stdout.write( CHARS['full_top'] )
+                elif floored_item > depth:
+                    sys.stdout.write( CHARS['fill'] )
+                else:
+                    sys.stdout.write(' ')
+                continue
+            else:
+                sys.stdout.write(' ')
+        print ""
+
+    # Draw X axis 
+    print y_offset + '└'+ "─"*(args.bins+2)
+    print y_offset + str(shape[0]) + ' '*(args.bins-3) + str(shape[1])
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='draw a histogram from stdin', add_help=False)
+    parser.add_argument('-b', '--bins', type=int, help='the number of bins (default=60)', default=60)
+    parser.add_argument('-h', '--height', type=int, help='the height of the plot (default=10)', default=10)
+    parser.add_argument('-?', '--help', action='help', help='show this help and exit')
+    return parser.parse_args(sys.argv[1:])
+
+
+def main():
+
+    args = parse_args()
+    input_data = sys.stdin.read().strip('\n')
+    input_list = input_data.split('\n')
+    
+    # Convert input to floats
+    try:
+        input_list = map(float,input_list)
+    except:
+        raise SystemError("Failed to convert input to float")
+    
+
+    hist_list,bin_edges = histogram(input_list,bins=args.bins)
+    max_count = max(hist_list)
+    shape = ( min(input_list), max(input_list) )
+    normed_hist_list = [ float(x)*args.height/max_count for x in hist_list ]
+    
+    # Draw the histogram
+    draw_hist(normed_hist_list,shape,args)
+ 
+    # Calculate stats on data
+    print '\ncount      :',len(input_list)
+    for perc in [25,50,75]:
+        print "{0}th perc. :".format(perc), percentile(input_list,perc)
+    
+
+if __name__ == '__main__':
+    main()
