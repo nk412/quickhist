@@ -1,6 +1,9 @@
 quickhist
 =========
 
+**NOTE:** requires `numpy`
+
+
 Plots the distribution of the input data, and provides some basic stats.
 
 Try:
