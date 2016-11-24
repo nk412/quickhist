@@ -31,7 +31,7 @@ count      : 100000
 75th perc. : 60738.0
 ```
 
-    for x in $( seq 1 100000 ); do echo $(( ($RANDOM + $RANDOM + $RANDOM) )) ; done  |  quickhist
+    for x in $( seq 1 100000 ); do echo $RANDOM ; done  |  quickhist
 
 ```
        │                  ┃                                         
