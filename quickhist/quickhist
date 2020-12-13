@@ -86,7 +86,7 @@ def main():
 
     # Convert input to floats
     try:
-        input_list = map(float,input_list)
+        input_list = list(map(float,input_list))
     except:
         raise SystemError("Failed to convert input to float")
 
