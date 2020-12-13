@@ -24,15 +24,15 @@
 
 
 import sys
-from numpy import histogram,percentile
+from numpy import histogram, percentile
 import argparse
 from math import floor
 
 # Constants
 CHARS={'full_top':'┃', 'half_top':'╻', 'fill':'┃'}
 
-def draw_hist(normed_hist_list,shape,args):
-    """ takes a list of histogram bin counts and shape(min,max) of input """
+def draw_hist(normed_hist_list, shape, args):
+    """Takes a list of histogram bin counts and shape(min,max) of input"""
 
     # TODO make the offset configurable
     y_offset = '       '
@@ -40,13 +40,13 @@ def draw_hist(normed_hist_list,shape,args):
 
     print("")
     # Build plot from top level
-    for depth in range(args.height-1,-1,-1):
+    for depth in range(args.height-1, -1, -1):
 
         # Draw Y axis
         if depth == args.height/2:
-            sys.stdout.write(y_label+'│')
+            sys.stdout.write(y_label + '│')
         else:
-            sys.stdout.write(y_offset+'│')
+            sys.stdout.write(y_offset + '│')
 
         # Draw bars
         for item in normed_hist_list:
@@ -66,8 +66,8 @@ def draw_hist(normed_hist_list,shape,args):
         print("")
 
     # Draw X axis 
-    print(y_offset + '└'+ "─"*(args.bins+2))
-    print(y_offset + str(shape[0]) + ' '*(args.bins-3) + str(shape[1]))
+    print(y_offset + '└' + "─" * (args.bins+2))
+    print(y_offset + str(shape[0]) + ' ' * (args.bins-3) + str(shape[1]))
 
 
 def parse_args():
@@ -90,10 +90,10 @@ def main():
     except:
         raise SystemError("Failed to convert input to float")
 
-    hist_list,bin_edges = histogram(input_list,bins=args.bins)
+    hist_list, bin_edges = histogram(input_list, bins=args.bins)
     max_count = max(hist_list)
     shape = ( min(input_list), max(input_list) )
-    normed_hist_list = [ float(x)*args.height/max_count for x in hist_list ]
+    normed_hist_list = [ float(x) * args.height / max_count for x in hist_list ]
 
     # Draw the histogram
     draw_hist(normed_hist_list,shape,args)
@@ -101,7 +101,7 @@ def main():
     # Calculate stats on data
     print('\ncount      :',len(input_list))
     for perc in [25,50,75]:
-        print("{0}th perc. :".format(perc), percentile(input_list,perc))
+        print("{0}th perc. :".format(perc), percentile(input_list, perc))
 
 
 if __name__ == '__main__':
