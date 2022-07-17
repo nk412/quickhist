@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright (c) 2015 Nagarjuna Kumarappan
 #
@@ -38,7 +38,7 @@ def draw_hist(normed_hist_list,shape,args):
     y_offset = '       '
     y_label  = ' prop. '
 
-    print ""
+    print("")
     # Build plot from top level
     for depth in range(args.height-1,-1,-1):
 
@@ -63,11 +63,11 @@ def draw_hist(normed_hist_list,shape,args):
                 continue
             else:
                 sys.stdout.write(' ')
-        print ""
+        print("")
 
     # Draw X axis 
-    print y_offset + '└'+ "─"*(args.bins+2)
-    print y_offset + str(shape[0]) + ' '*(args.bins-3) + str(shape[1])
+    print( y_offset + '└'+ "─"*(args.bins+2))
+    print(y_offset + str(shape[0]) + ' '*(args.bins-3) + str(shape[1]))
 
 
 def parse_args():
@@ -86,7 +86,7 @@ def main():
     
     # Convert input to floats
     try:
-        input_list = map(float,input_list)
+        input_list = list(map(float,input_list))
     except:
         raise SystemError("Failed to convert input to float")
     
@@ -100,9 +100,9 @@ def main():
     draw_hist(normed_hist_list,shape,args)
  
     # Calculate stats on data
-    print '\ncount      :',len(input_list)
+    print('\ncount      :',len(input_list))
     for perc in [25,50,75]:
-        print "{0}th perc. :".format(perc), percentile(input_list,perc)
+        print("{0}th perc. :".format(perc), percentile(input_list,perc))
     
 
 if __name__ == '__main__':
